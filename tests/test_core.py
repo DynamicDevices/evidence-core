@@ -32,7 +32,7 @@ def test_map_url():
 
 def test_build_manifest_evidence_v1():
     m = build_manifest(
-        product="vawg-evidence-lab",
+        product="personal-safety-pwa",
         incident_id="VAWG-20260624T064356Z_53.4792N_3.0207W_001",
         base_name="VAWG-20260624T064356Z_53.4792N_3.0207W_001",
         recorded_utc="2026-06-24T06:43:56Z",
