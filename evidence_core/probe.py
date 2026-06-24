@@ -229,7 +229,7 @@ def probe_image_exifread(path: Path) -> ProbeResult | None:
     result.device_software = str(tags.get("Image Software", ""))
 
     dt_raw = str(tags.get("EXIF DateTimeOriginal") or tags.get("Image DateTime") or "")
-    dt_utc = _parse_utc_tag(dt_raw.replace(" ", "T") + "+00:00" if dt_raw else "")
+    dt_utc = _parse_utc_tag(dt_raw)
     if dt_utc is None and dt_raw:
         dt_utc = _parse_utc_tag(dt_raw.replace(" ", "T"))
     if dt_utc:
