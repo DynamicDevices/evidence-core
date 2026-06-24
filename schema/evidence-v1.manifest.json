@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/DynamicDevices/evidence-core/schema/evidence-v1.manifest.json",
+  "title": "Evidence manifest v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "product",
+    "incident_id",
+    "base_name",
+    "recorded_utc",
+    "location",
+    "files"
+  ],
+  "properties": {
+    "schema": {
+      "const": "evidence/v1"
+    },
+    "product": {
+      "type": "string",
+      "minLength": 1
+    },
+    "incident_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-"
+    },
+    "base_name": {
+      "type": "string"
+    },
+    "recorded_utc": {
+      "type": "string"
+    },
+    "recorded_bst": {
+      "type": "string"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "latitude": { "type": "string" },
+        "longitude": { "type": "string" },
+        "label": { "type": "string" },
+        "map_url": { "type": "string" },
+        "map_visible": { "type": "boolean" }
+      }
+    },
+    "source_device": {
+      "type": "object"
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "sha256", "role"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string" },
+          "role": { "type": "string" }
+        }
+      }
+    },
+    "processing": { "type": "object" },
+    "police_ref": { "type": "string" },
+    "youtube_url": { "type": "string" },
+    "notes": { "type": "string" },
+    "extensions": { "type": "object" }
+  },
+  "additionalProperties": true
+}

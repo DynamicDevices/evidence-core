@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evidence-core"
+version = "0.1.0"
+description = "Shared metadata probe, manifest schema, and map helpers for evidence intake products"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+exif = ["exifread>=3.0"]
+dev = ["pytest>=7.0", "exifread>=3.0"]
+
+[project.scripts]
+probe-media = "evidence_core.cli:probe_main"
+build-geojson = "evidence_core.cli:geojson_main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["evidence_core*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
