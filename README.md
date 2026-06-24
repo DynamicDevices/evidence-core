@@ -7,7 +7,7 @@ Used as a **git submodule** at `core/` by product repos:
 | Product | Repo | Visibility |
 |---------|------|------------|
 | Reckless Rides UK | [reckless-rides-uk](https://github.com/DynamicDevices/reckless-rides-uk) | Public |
-| Personal safety PWA | [personal-safety-pwa](https://github.com/DynamicDevices/personal-safety-pwa) | Private (org) |
+| Personal safety app | [personal-safety-app](https://github.com/DynamicDevices/personal-safety-app) | Private (org) |
 
 This repo is **public**. It contains **no credentials**, **no real incident media**, and **no victim data**.
 
