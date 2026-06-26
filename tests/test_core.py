@@ -69,6 +69,22 @@ def test_geojson_skips_map_invisible(tmp_path):
     assert collection["features"] == []
 
 
+def test_geojson_skips_private_youtube():
+    meta = {
+        "incident_id": "DEB-002",
+        "base_name": "DEB-002",
+        "youtube_url": "https://www.youtube.com/watch?v=abc123",
+        "incident": {
+            "latitude": "53.4092",
+            "longitude": "-2.9778",
+            "recorded_utc": "2026-06-23T08:03:03Z",
+        },
+        "youtube": {"title": "Test", "privacy": "private"},
+    }
+    assert incident_to_feature(meta, require_public_youtube=True) is None
+    assert incident_to_feature(meta, require_public_youtube=False) is not None
+
+
 def test_geojson_includes_youtube_incident():
     meta = {
         "incident_id": "DEB-001",
@@ -81,7 +97,7 @@ def test_geojson_includes_youtube_incident():
             "recorded_bst": "2026-06-23 09:03:03 BST",
             "map_url": "https://www.google.com/maps?q=53.4092,-2.9778",
         },
-        "youtube": {"title": "Reckless Rides UK — test"},
+        "youtube": {"title": "Reckless Rides UK — test", "privacy": "public"},
     }
     feature = incident_to_feature(meta)
     assert feature is not None

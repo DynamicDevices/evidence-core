@@ -5,13 +5,21 @@ import json
 from pathlib import Path
 
 
-def incident_to_feature(meta: dict) -> dict | None:
+def _youtube_is_public(meta: dict) -> bool:
+    yt = meta.get("youtube") or {}
+    privacy = yt.get("privacy") or yt.get("privacy_at_upload") or ""
+    return str(privacy).lower() == "public"
+
+
+def incident_to_feature(meta: dict, *, require_public_youtube: bool = False) -> dict | None:
     youtube_url = meta.get("youtube_url") or meta.get("youtube", {}).get("url", "")
     incident = meta.get("incident") or meta.get("location") or {}
     lat = incident.get("latitude")
     lon = incident.get("longitude")
 
     if incident.get("map_visible") is False:
+        return None
+    if require_public_youtube and not _youtube_is_public(meta):
         return None
     if not lat or not lon:
         return None
@@ -37,6 +45,7 @@ def incident_to_feature(meta: dict) -> dict | None:
             "recorded_utc": incident.get("recorded_utc", meta.get("recorded_utc", "")),
             "recorded_bst": incident.get("recorded_bst", meta.get("recorded_bst", "")),
             "youtube_url": youtube_url,
+            "youtube_privacy": (meta.get("youtube") or {}).get("privacy", ""),
             "map_url": incident.get(
                 "map_url",
                 f"https://www.google.com/maps?q={lat},{lon}",
@@ -50,6 +59,7 @@ def load_features_from_dir(
     *,
     pattern: str = "*_UPLOAD.json",
     require_youtube_url: bool = False,
+    require_public_youtube: bool = False,
 ) -> list[dict]:
     features: list[dict] = []
     for path in sorted(directory.glob(pattern)):
@@ -62,7 +72,7 @@ def load_features_from_dir(
         if require_youtube_url and not youtube_url:
             continue
 
-        feature = incident_to_feature(meta)
+        feature = incident_to_feature(meta, require_public_youtube=require_public_youtube)
         if feature:
             if require_youtube_url and not feature["properties"].get("youtube_url"):
                 continue
@@ -75,11 +85,13 @@ def build_geojson(
     *,
     pattern: str = "*_UPLOAD.json",
     require_youtube_url: bool = False,
+    require_public_youtube: bool = False,
 ) -> dict:
     features = load_features_from_dir(
         directory,
         pattern=pattern,
         require_youtube_url=require_youtube_url,
+        require_public_youtube=require_public_youtube,
     )
     return {"type": "FeatureCollection", "features": features}
 
@@ -90,11 +102,13 @@ def write_geojson(
     *,
     pattern: str = "*_UPLOAD.json",
     require_youtube_url: bool = False,
+    require_public_youtube: bool = False,
 ) -> int:
     collection = build_geojson(
         directory,
         pattern=pattern,
         require_youtube_url=require_youtube_url,
+        require_public_youtube=require_public_youtube,
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(collection, indent=2) + "\n")
